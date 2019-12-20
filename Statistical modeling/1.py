@@ -93,12 +93,16 @@ H2_y = (y22 - x2[1])*s + x2[1]
 H2_z = (z22 - x2[2])*s + x2[2]
 
 H = [[H1_x, H2_x], [H1_y, H2_y], [H1_z, H2_z]]
-
-
+B_differences = [(H2_x - H1_x)/2, (H2_y - H1_y)/2, (H2_z - H1_z)/2]
+print(H[0][0])
+print(B_differences[0])
+B = [H[0][0] + B_differences[0], H[1][0] + B_differences[1], H[2][0] + B_differences[2]]
 
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+ax.scatter(B[0],B[1],B[2], 'yellow')
+ax.scatter(B[0],B[1],B[2], 'yellow')
 ax.plot(x0[0], x0[1], x0[2], 'b')
 ax.plot(x00[0], x00[1], x00[2], 'b')
 ax.plot(H[0], H[1], H[2], 'r')
