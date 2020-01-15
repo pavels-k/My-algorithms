@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import linalg
 
-h = np.array([-1, 0, 1, 2, 4])
-x = np.array([2, 1, 0, -2, 3])
+h = np.array([1, -1, 2, 0, 1])
+x = np.array([3, 1, -3, 2, 0])
 I = np.ones(len(h))
 H = np.vstack([I, h])
 print(H)
@@ -15,6 +15,7 @@ z = teta[0] + teta[1]*tt
 x_ = []
 for i in range(len(h)):
     x_.append(H[0,i] * teta[0] + H[1,i] * teta[1]) 
+print(x_)
 e_2 = 0
 for i in range(len(x)):
     e_2 = e_2 + (x[i] - x_[i])**2 
@@ -31,8 +32,8 @@ print('summa X - X_',sumX)
 R2 = 1  - (e_2 / sumX)
 print("к. детерм. = ",R2)
 
-"""
+'''
 plt.scatter(h, x, color='red', s=40, marker='o')
 plt.plot(tt, z)
 plt.show()
-"""
+'''
