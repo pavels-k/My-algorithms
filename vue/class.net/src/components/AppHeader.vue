@@ -2,7 +2,7 @@
   <v-app id="inspire">
     
     <v-content>
- 
+      <D3BarChart :config="config" :datum="data"></D3BarChart>
       <v-container
         class="fill-height"
         fluid
@@ -69,6 +69,7 @@
 		<ul>
 			<li> блоки задач:
 				<ul>
+          
 					<li> тестирующие,</li>
 					<li> самообучающие,</li>
 					<li> контролирующие;</li>
@@ -81,6 +82,19 @@
 					<li> возможности администрирования группы,</li>
 					<li> просмотр статистики решения задач по группе.</li>
 				</ul>
+        
+         <v-data-table
+    :headers="headers"
+    :items="desserts"
+    class="elevation-1"
+  >
+    <template v-slot:item.calories="{ item }">
+      <v-chip :color="getColor(item.calories)" dark>{{ item.calories }}</v-chip>
+    </template>
+    <template v-slot:item.fat="{ item }">
+      <v-chip :color="getColor2(item.fat)" dark>{{ item.fat }}</v-chip>
+    </template>
+  </v-data-table>
 			</li>
 		</ul>
 	</div>
@@ -162,13 +176,84 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      source: String,
+// data
+
+
+   export default {
+    data () {
+      return {
+        data : [{
+          name: "Lorem",
+          total: 30
+        },{
+          name: "Ipsum",
+          total: 21
+        },{
+          name: "Dolor",
+          total: 20
+        }],
+
+        // Configuration
+        config : [{
+          key: "name",
+          value: "total",
+          color: "steelblue",
+        }],
+        headers: [
+          {
+            text: 'Сервисы',
+            align: 'start',
+            sortable: false,
+            value: 'name',
+          },
+          { text: 'Время(мс)', value: 'calories' },
+          { text: 'Статус сервиса', value: 'fat' },
+        ],
+        desserts: [
+          {
+            name: 'Пользователи',
+            calories: 15,
+            fat: 'Ok',
+            carbs: 24,
+            protein: 4.0,
+            iron: '1%',
+          },
+          {
+            name: 'Студенты',
+            calories: 10,
+            fat: 'Ok',
+            carbs: 37,
+            protein: 4.3,
+            iron: '1%',
+          },
+          {
+            name: 'Теория',
+            calories: 7,
+            fat: 'Ok',
+            carbs: 23,
+            protein: 6.0,
+            iron: '7%',
+          },
+          {
+            name: 'Практика',
+            calories: '60',
+            fat: 'Ok',
+            carbs: 67,
+            protein: 4.3,
+            iron: '8%',
+          },
+        ],
+      }
     },
-    data: () => ({
-      drawer: null,
-    }),
-    
+    methods: {
+      getColor (calories) {
+        if (calories > 400) return 'red'
+        else if (calories > 50) return 'orange'
+        else return 'green'
+      },
+      getColor2 (calories) {
+        if (calories == 'Ok') return 'green'
+      },
+    },
   }
 </script>
