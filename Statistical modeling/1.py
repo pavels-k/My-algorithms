@@ -94,10 +94,10 @@ H2_z = (z22 - x2[2])*s + x2[2]
 
 H = [[H1_x, H2_x], [H1_y, H2_y], [H1_z, H2_z]]
 B_differences = [(H2_x - H1_x)/2, (H2_y - H1_y)/2, (H2_z - H1_z)/2]
-print(H[0][0])
-print(B_differences[0])
+#print(H[0][0])
+#print(B_differences[0])
 B = [H[0][0] + B_differences[0], H[1][0] + B_differences[1], H[2][0] + B_differences[2]]
-
+print(B)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
