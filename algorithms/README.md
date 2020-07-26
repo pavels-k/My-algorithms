@@ -1,9 +1,9 @@
-[BFS.py](BFS) -- Поиск в ширину
+[BFS](BFS.py) -- Поиск в ширину
 
-[bynary_search.py](bynary_search) -- Двоичный поиск
+[bynary_search](bynary_search.py) -- Двоичный поиск
 
-[dijkstras_algorithm.py ](dijkstras_algorithm) -- Алгоритм дейкстры
+[dijkstras_algorithm](dijkstras_algorithm.py) -- Алгоритм дейкстры
 
-[quicksort.py](quicksort) -- Быстрая сортировка
+[quicksort](quicksort.py) -- Быстрая сортировка
 
-[selectionSort.py](selectionSort) -- Сортировка выбором
+[selectionSort](selectionSort.py) -- Сортировка выбором
