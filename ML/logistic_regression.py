@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from Model import LogisticRegressionUsingGD
+from logistic_regression_model import LogisticRegressionUsingGD
 from sklearn.metrics import accuracy_score
 
 
@@ -12,7 +12,7 @@ def load_data(path, header):
 
 
 if __name__ == "__main__":
-    data = pd.read_csv("marks.txt")
+    data = pd.read_csv("data/marks.txt")
 
     X = data.iloc[:, :-1]
     y = data.iloc[:, -1]
