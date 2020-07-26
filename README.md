@@ -2,8 +2,8 @@
 
 [Algorithms](Algorithms) -- Алгоритмы
 
-[Deterministic_finite_automaton](Deterministic finite automaton) -- Детерменированный конечный автомат
+[Deterministic finite automaton](Deterministic_finite_automaton) -- Детерменированный конечный автомат
 
-[Machine_learning](Machine learning) -- Машинное обучение
+[Machine learning](Machine_learning) -- Машинное обучение
 
 [Programms](Programms) -- Мои программы из разных задач
