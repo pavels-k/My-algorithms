@@ -8,6 +8,11 @@
 
 [logistic_regression_sk](logistic_regression_sk.py) -- Логистическая регрессия из sklearn
 
+[logistic_regression_students](logistic_regression_students.py) -- Логистическая регрессия по данным датасета students
+
 [MNK_matrix](MNK_matrix.py) -- Подсчёт коэффициентов в МНК с помощью матричного подхода
 
 [MNK](MNK.py) -- Подсчёт коэффициентов в МНК с помощью производных
+
+[kmeans++](kmeans++.py) -- Использование kmeans++ по данным датасета ириса
+
