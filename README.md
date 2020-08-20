@@ -1,6 +1,6 @@
 ### Программы ###
 
-[Algorithms](algorithms) -- Алгоритмы
+[Algorithms](Algorithms) -- Алгоритмы
 
 [Deterministic finite automaton](Deterministic_finite_automaton) -- Детерменированный конечный автомат
 
