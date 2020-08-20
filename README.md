@@ -7,3 +7,5 @@
 [Machine learning](Machine_learning) -- Машинное обучение
 
 [Programms](Programms) -- Мои программы из разных задач
+
+[SQL](SQL) -- Решенные задачи на sql
