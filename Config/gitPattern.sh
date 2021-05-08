@@ -1,3 +1,4 @@
+# git
 mkdir C:/develop/ #cоздаем папку на диске C (если Windows)
 git clone https://github.com/pavels-k/vsc.git # копируем свой репозиторий на компьютер
 cd title-repository/ #заходим в локальный репозиторий
