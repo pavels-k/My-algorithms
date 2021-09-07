@@ -30,7 +30,7 @@ for i in range(len(x)):
         plt.scatter(x[i], y[i], color='red', s=40, marker='o')
     else:
         plt.scatter(x[i], y[i], color='blue', s=40, marker='o')        
-plt.scatter(point[0], point[1], color='green', s=30, marker='o')        
+plt.scatter(point[0], point[1], color='green', s=30, marker='o')
 
 t = np.arange(min(x)-1,max(x)+1,0.1)
 plt.show()

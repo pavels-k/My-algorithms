@@ -26,7 +26,8 @@ y_kmeans = kmeans.fit_predict(x)
 
 plt.scatter(x[y_kmeans == 0, 0], x[y_kmeans == 0, 1], s = 50, c = 'red', label = 'Iris-setosa')
 plt.scatter(x[y_kmeans == 1, 0], x[y_kmeans == 1, 1], s = 50, c = 'blue', label = 'Iris-versicolour')
-plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1], s = 50, c = 'green', label = 'Iris-virginica')
+plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1],
+            s=50, c='green', label='Iris-virginica')
 plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:,1], s = 100, c = 'black',marker = 'x', label = 'Centroids')
 plt.xlabel('SepalLengthCm')
 plt.ylabel('SepalWidthCm')

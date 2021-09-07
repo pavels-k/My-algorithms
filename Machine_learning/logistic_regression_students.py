@@ -13,6 +13,7 @@ df.loc[df["lunch"] == "free/reduced"] = 0
 y = df["lunch"].values
 X = np.array(X)
 y = np.array(y)
+y=y.astype('int')
 
 logreg = LogisticRegression()
 logreg.fit(X, y)
