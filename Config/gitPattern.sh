@@ -20,4 +20,4 @@ git push -u origin master
 git config --global user.name 'имя_пользователя_github'
 git config --global user.email 'ваша_электронная_почта'
 
-git remote set-url origin https://github.com/pavels-k/1lr.git #изменить ссылку репозитория(в случае добавления нвого проекта)
+git remote set-url origin https://github.com/pavels-k/1lr.git #изменить ссылку репозитория(в случае добавления нового проекта)
