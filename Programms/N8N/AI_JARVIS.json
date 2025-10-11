@@ -1,0 +1,466 @@
+{
+  "name": "AI_JARVIS",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1f8dc79e-77b9-4559-a69b-ed6e216f1b77",
+      "name": "Telegram Trigger",
+      "webhookId": "65db2982-e9a7-403f-80ed-070979ceb33f",
+      "credentials": {
+        "telegramApi": {
+          "id": "qsUtownYpG6x4wVC",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "4200d27c-5898-447c-bbc8-2691e9085bc8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "текст"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6b220071-da85-415d-a18e-58b5aa74e142",
+                    "leftValue": "={{ $json.message.voice }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "голос"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2828ac62-84a4-4ebf-9938-a7a6177974df",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee678299-2777-48a5-a7d5-52ffb9542ca2",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        -96
+      ],
+      "id": "ebb08dbd-63a0-484c-914f-a7063e502021",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        96
+      ],
+      "id": "5e356f4f-7dcc-49f9-9b6b-5f20a4aab79f",
+      "name": "Get a file",
+      "webhookId": "36b07a63-744a-438f-8720-6c2b4eb6399d",
+      "credentials": {
+        "telegramApi": {
+          "id": "qsUtownYpG6x4wVC",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        608,
+        96
+      ],
+      "id": "1d4520a7-abcc-41b0-bf7b-0dcaadbc6f7a",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "Jh9tEvsu7jOGctzl",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "Типы запросов и правила их распределения:\n\nЗапросы, связанные с почтой (email):\n\nПримеры: \"отправка письма\", \"проверка почты\", \"пометка письма как прочитанного или наоборот\".\n\nВаше действие: Использовать инструмент setool mailJarvisse.\n\nЗапросы, связанные с контактами:\n\nПримеры: запрос или предоставление \"информации о человеке\" (имя, почта, телефон).\n\nВаше действие: Использовать инструмент setool contactJarvisse, который работает с таблицей контактов.\n\nКомбинированные запросы:\n\nПример: «Отправь сообщение моему другу Алексу.»\n\nВаше действие:\n\nШаг 1: Сначала использовать setool contactJarvisse, чтобы найти контактную информацию (например, email адрес Алекса).\n\nШаг 2: Затем направить запрос в setool mailJarvisse для непосредственной отправки сообщения.\n\nКлючевое правило: Вы — первоочередной агент, отвечающий только за распределение запросов. Вы никогда не выполняете действия сами.\n\nТекущая дата/время {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        -16
+      ],
+      "id": "4c8a081e-1b0b-4271-8991-0ee3fb1c61a3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        224
+      ],
+      "id": "2e09777a-a1bb-4199-9236-3bb13741a8d9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "RTVj5mqeaJUEdhTy",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        224
+      ],
+      "id": "231041e9-d0e5-4cd6-82d9-45a0fe5331c9",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kyo1G4c7aC3I2auDUDbd6ncWS-lXOIoWZ_qYxitHPY4",
+          "mode": "list",
+          "cachedResultName": "Database for n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kyo1G4c7aC3I2auDUDbd6ncWS-lXOIoWZ_qYxitHPY4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kyo1G4c7aC3I2auDUDbd6ncWS-lXOIoWZ_qYxitHPY4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1136,
+        208
+      ],
+      "id": "b5bd5092-43be-4a8c-9c57-e96fdb72961b",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qiskt2aVhVoJcAsF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "for all email-related tasks",
+        "workflowId": {
+          "__rl": true,
+          "value": "qkeXaU2nTdLUYcqB",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/qkeXaU2nTdLUYcqB",
+          "cachedResultName": "emailjarvis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        224
+      ],
+      "id": "d66f573a-edfe-481d-92ec-c4bb6a788b67",
+      "name": "emailjarvis"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "agnfI7sEYc1q1OvS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/agnfI7sEYc1q1OvS",
+          "cachedResultName": "calendarjarvis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        208
+      ],
+      "id": "117d9c5e-9d69-41f5-a5fb-be7b49dec39f",
+      "name": "Call 'calendarjarvis'"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{  $('AI Agent').item.json.output }}{{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        -16
+      ],
+      "id": "00f8d1b8-f8f2-4bfe-8c54-c80cfdc69d52",
+      "name": "Send a text message",
+      "webhookId": "11156767-26f9-438e-933b-2e22685f1af0",
+      "credentials": {
+        "telegramApi": {
+          "id": "qsUtownYpG6x4wVC",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "emailjarvis": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'calendarjarvis'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "461ca518-7151-4c5c-80dc-53c1c7ac5cf4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b8531b4c5176162cb7a3b38e3a1d06aebc54aa35f14d6e5a202ce8b9b4d3ac02"
+  },
+  "id": "L5uB1aFwRGjxi3gV",
+  "tags": []
+}

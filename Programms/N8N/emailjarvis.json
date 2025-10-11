@@ -1,0 +1,163 @@
+{
+  "name": "emailjarvis",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08a2d6bf-4f87-4a05-81cc-2073eef6a250",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Привет, ты мой email ассистент.\n\nЯ буду направлять тебе задачи, с которыми тебе необходимо будет справиться!\nДля их выполнения используй инструменты tools, которые я предоставил тебе ниже!\n\nsend a message использую этот tool, когда я прошу тебя отправить сообщение кому либо\n\nget messages использую этот tool, когда я прошу тебя получить сообщения, рассказать о сообщениях на моем @mail, уточнив статус моего email\n\ndelete message использую этот tool, когда я прошу тебя удалить какое-то сообщение.\n\nдоп инфа\nсегодня — {{ $now }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6be5d646-3504-4e4d-8109-b2ea31059a00",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        208
+      ],
+      "id": "9314fcaa-3506-401a-b74a-f42490fc810c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "RTVj5mqeaJUEdhTy",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $fromAI(\"emailAddress\", \"the email address we are sending to\") }}",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "pavelss_k"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        304,
+        208
+      ],
+      "id": "959e938e-149c-4f93-9cf4-44c3ef8fdac2",
+      "name": "Send a message in Gmail",
+      "webhookId": "9bee5dea-ee57-438c-b05f-b5c080c6e9a7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "hczlQa0DLOo0K92T",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": "={{ $fromAI('Limit') }}",
+        "filters": {
+          "sender": "={{ $fromAI(\"senderemail\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        256
+      ],
+      "id": "3733dc7c-ff58-45aa-a2bd-18f61f0516a0",
+      "name": "Get many messages in Gmail",
+      "webhookId": "15195e45-48cb-49ed-8073-42c0cd7aa0d7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "hczlQa0DLOo0K92T",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "81583ab6-9069-4e1f-8e7d-fef3a19d9301",
+  "meta": {
+    "instanceId": "b8531b4c5176162cb7a3b38e3a1d06aebc54aa35f14d6e5a202ce8b9b4d3ac02"
+  },
+  "id": "qkeXaU2nTdLUYcqB",
+  "tags": []
+}

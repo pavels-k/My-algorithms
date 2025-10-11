@@ -1,0 +1,252 @@
+{
+  "name": "calendarjarvis",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f1fee2d7-6d93-44da-a98b-a3ecf56f0c04",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Привет, ты мой календарный ассистент.\n\nЯ буду направлять тебе задачи, с которыми\nтебе необходимо будет справиться!\nДля их выполнения используй инструменты\n(modules), которые я предоставлю тебе ниже:\n\n1) Get Events (getAll: event)\n- Используй этот инструмент, когда я прошу\nтебя показать список событий в моем календаре.\n\n2) Create Event (create: event)\n- Используй этот инструмент, когда я прошу\nтебя создать новое событие, используй только, когда я не прошу создать встречу с кем то (каким либо участником)\n\n3) Create Event with Attendee (create: event)\n- Используй этот инструмент, когда я прошу\nтебя создать новое событие с участником (или\nнесколькими участниками).\n\n4) Update Event (update: event)\n- Используй этот инструмент, когда я прошу\nтебя обновить существующее событие.\n\n5) Delete Event (delete: event)\n- Используй этот инструмент, когда я прошу\nтебя удалить событие.\n\nВ конце ответа прикрепляй ссылку на данный\nивент.\n\nдополнительная информация\nсегодня — {{ $now }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5906e0e3-a94b-4cd5-9e8c-528abbefc33f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        208
+      ],
+      "id": "afe8aeee-14d6-44cd-9dfe-1824be8f91ba",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "RTVj5mqeaJUEdhTy",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "pavelrusk@gmail.com",
+          "mode": "list",
+          "cachedResultName": "pavelrusk@gmail.com"
+        },
+        "timeMin": "={{ $fromAI(\"dayBefore\", \"the day before the date the user requested\")}}",
+        "timeMax": "={{ $fromAI(\"dayBefore\", \"the day after the date the user requested\")}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        208
+      ],
+      "id": "4fee270d-44e5-4523-9620-46d8c57f0798",
+      "name": "Get event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "wn3rA1liSFoMzDxb",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "pavelrusk@gmail.com",
+          "mode": "list",
+          "cachedResultName": "pavelrusk@gmail.com"
+        },
+        "start": "={{ $fromAI(\"eventStart\") }}",
+        "end": "={{ $fromAI(\"eventEnd\") }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $fromAI(\"eventTitle\") }}"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        208
+      ],
+      "id": "18e2ba08-5ab0-4f77-be2d-c2cf0b936f38",
+      "name": "Create event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "wn3rA1liSFoMzDxb",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "pavelrusk@gmail.com",
+          "mode": "list",
+          "cachedResultName": "pavelrusk@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "updateFields": {
+          "end": "={{ $fromAI(\"endTime\") }}",
+          "start": "={{ $fromAI(\"startTime\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        208
+      ],
+      "id": "7821e706-a108-4d4f-811f-e025d31c41c9",
+      "name": "Update an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "wn3rA1liSFoMzDxb",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "pavelrusk@gmail.com",
+          "mode": "list",
+          "cachedResultName": "pavelrusk@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        208
+      ],
+      "id": "98896f3d-3527-4bda-8393-c1141dec73a3",
+      "name": "Delete an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "wn3rA1liSFoMzDxb",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get event": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create event": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ddc81a94-4c46-41f5-8093-21bf99bce539",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b8531b4c5176162cb7a3b38e3a1d06aebc54aa35f14d6e5a202ce8b9b4d3ac02"
+  },
+  "id": "agnfI7sEYc1q1OvS",
+  "tags": []
+}
